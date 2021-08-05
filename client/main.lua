@@ -135,7 +135,7 @@ end
 
 function startTimer()
     Citizen.CreateThread(function()
-        while timer >= 0 do
+        while timer >= 0 and pillUsed do
             Citizen.Wait(1000)
             timer = timer - 1000
         end
