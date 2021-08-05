@@ -3,7 +3,7 @@ Config = {}
 local second = 1000
 ----------------------------------------------------------------
 
-Config.Locale = 'cs'
+Config.Locale = 'en'
 
 Config.OblivionDuration = second * 180 -- Change the number to how many seconds you want the effect of fake pill to last
 Config.ShowTimer = true -- Shows player how many seconds is remaining
