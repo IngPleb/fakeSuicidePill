@@ -25,7 +25,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         if pillUsed == true then
             animation()
-            Citizen.Wait(Config.DurationBeforeFakeEffect) -- Waits x seconds before starting the effect (config.lua)
+            Citizen.Wait(Config.DurationBeforeFakeEffect * 1000) -- Waits x seconds before starting the effect (config.lua)
             if not isPlayerDead() then
                 log(_U('LOGplayerUsedFakeSuicidePill'))
                 --------------------------------------------------------
@@ -106,7 +106,7 @@ end
 
 function drawDesiredText()
     if showTimer then
-        drawText(_U('wakeUpTimer') .. " " .. math.floor(timer / 1000), 0.5, Config.TextPos)
+        drawText(_U('wakeUpTimer') .. " " .. math.floor(timer), 0.5, Config.TextPos)
     end
 
     if mode == "control" then
@@ -115,9 +115,10 @@ function drawDesiredText()
 end
 
 function startDesiredThread()
-    if showTimer then
+
+    if mode ~= "control" then
         startTimer()
-    elseif mode == "control" then
+    else
         startKeyChecking()
     end
 end
@@ -135,9 +136,13 @@ end
 
 function startTimer()
     Citizen.CreateThread(function()
-        while timer >= 0 and pillUsed do
+        while pillUsed do
             Citizen.Wait(1000)
-            timer = timer - 1000
+            timer = timer - 1
+
+            if timer <= 0 then
+                pillUsed = false
+            end
         end
         timer = Config.OblivionDuration
     end)
@@ -171,7 +176,8 @@ end
 
 function log(logMessage)
     if Config.EnableLogs then
-        exports.JD_logs:discord(logMessage:gsub(":player_name:",GetPlayerName(PlayerId())), GetPlayerServerId(PlayerId()), 0, Config.LogColor, Config.LogChannel)
+        exports.JD_logs:discord(logMessage:gsub(":player_name:", GetPlayerName(PlayerId())),
+            GetPlayerServerId(PlayerId()), 0, Config.LogColor, Config.LogChannel)
     end
 end
 
@@ -202,7 +208,7 @@ end)
 RegisterNetEvent('suicidepills:deathpillused')
 AddEventHandler('suicidepills:deathpillused', function()
     animation()
-    Citizen.Wait(Config.DurationBeforeDeathEffect)
+    Citizen.Wait(Config.DurationBeforeDeathEffect * 1000)
     killPlayer()
     log(_U('LOGplayerUsedSuicidePill'))
 end)

@@ -13,12 +13,7 @@ ESX.RegisterUsableItem('fakeSuicidePill', function(source)
         TriggerClientEvent('esx:showNotification', source, _U('fakeSuicidePill_used'))
     end
 
-    if Config.Mode == "duration" then
-
-        Citizen.Wait(Config.OblivionDuration)
-        TriggerClientEvent('suicidepills:stoppill', source)
-
-    elseif not Config.Mode == "control" then
+    if not Config.Mode == "control" and not Config.Mode == "duration"then
         TriggerClientEvent('suicidepills:stoppill', source)
         error("Invalid oblivion pill mode! Look in config file")
     end
